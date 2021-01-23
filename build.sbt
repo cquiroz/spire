@@ -16,10 +16,11 @@ lazy val apfloatVersion = "1.10.0"
 lazy val jscienceVersion = "4.3.1"
 lazy val apacheCommonsMath3Version = "3.6.1"
 
-val Scala213 = "2.13.6"
+val Scala213 = "2.13.5"
+val Scala30 = "3.0.0-M3"
 
-ThisBuild / crossScalaVersions := Seq(Scala213)
-ThisBuild / scalaVersion := Scala213
+ThisBuild / crossScalaVersions := Seq(Scala213, Scala30)
+ThisBuild / scalaVersion := Scala30
 ThisBuild / organization := "org.typelevel"
 
 ThisBuild / githubWorkflowArtifactUpload := false
@@ -34,7 +35,6 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("doc"), name = Some("Build docs"))
 )
 
-Global / onChangedBuildSource := ReloadOnSourceChanges
 // Projects
 
 lazy val spire = project
@@ -228,7 +228,7 @@ addCommandAlias(
   ";coreJVM/scalastyle;macrosJVM/test;coreJVM/test;extrasJVM/test;lawsJVM/test;testsJVM/test;examples/test;benchmark/test"
 )
 
-addCommandAlias("validateJS", ";macrosJS/test;coreJS/test;extrasJS/test;lawsJS/test;testsJS/test")
+addCommandAlias("validateJS", ";macrosJS/test;core.js/test;extrasJS/test;lawsJS/test;testsJS/test")
 
 addCommandAlias("validate", ";validateJVM;validateJS")
 
@@ -381,7 +381,7 @@ lazy val coreSettings = Seq(
     IO.write(algebraFile, algebraSource)
 
     Seq[File](algebraFile)
-  }
+  },
 )
 
 lazy val extrasSettings = Seq(
@@ -433,10 +433,13 @@ lazy val crossVersionSharedSources: Seq[Setting[_]] =
         }
       }
     }
-  }
+  } ++ Seq(
+    Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("main", baseDirectory.value, scalaVersion.value),
+    Test / unmanagedSourceDirectories ++= scalaVersionSpecificFolders("test", baseDirectory.value, scalaVersion.value)
+  )
 
 lazy val scalaMacroDependencies: Seq[Setting[_]] = Seq(
-  libraryDependencies += scalaOrganization.value % "scala-reflect" % scalaVersion.value % "provided"
+  libraryDependencies ++= {if (isDotty.value) Seq.empty else Seq(scalaOrganization.value % "scala-reflect" % scalaVersion.value % "provided")}
 )
 
 lazy val commonScalacOptions = Def.setting(
@@ -524,3 +527,15 @@ lazy val credentialSettings = Seq(
       .getOrElse(Path.userHome / ".ivy2" / ".credentials")
   )
 )
+
+def scalaVersionSpecificFolders(srcName: String, srcBaseDir: java.io.File, scalaVersion: String) = {
+  def extraDirs(suffix: String) =
+    List(CrossType.Pure, CrossType.Full)
+      .flatMap(_.sharedSrcDir(srcBaseDir, srcName).toList.map(f => file(f.getPath + suffix)))
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, y))     => extraDirs("-2.x") ++ (if (y >= 13) extraDirs("-2.13+") else Nil)
+    case Some((0 | 3, _)) => extraDirs("-3.x")
+    case _                => Nil
+  }
+}
+

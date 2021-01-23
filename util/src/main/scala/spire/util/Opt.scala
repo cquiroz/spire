@@ -14,13 +14,15 @@ object Opt {
   // https://hseeberger.wordpress.com/2013/10/04/name-based-extractors-in-scala-2-11/
   def unapply[A](n: Opt[A]): Opt[A] = n
 
-  implicit def Eq[A](implicit ev: Eq[A]): Eq[Opt[A]] = new Eq[Opt[A]] {
+  class EqOpt[A](implicit ev: Eq[A]) extends Eq[Opt[A]] {
     def eqv(x: Opt[A], y: Opt[A]): Boolean =
       if (x.isEmpty) y.isEmpty else y.nonEmpty && ev.eqv(x.ref, y.ref)
   }
+
+  implicit def spireEqForOpt[A: Eq]: Eq[Opt[A]] = new EqOpt[A]
 }
 
-class Opt[+A](val ref: A) extends AnyVal {
+class Opt[+A](val ref: A) {
 
   def isDefined: Boolean = ref != null
   def nonEmpty: Boolean = ref != null
