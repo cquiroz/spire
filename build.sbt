@@ -17,7 +17,7 @@ lazy val jscienceVersion = "4.3.1"
 lazy val apacheCommonsMath3Version = "3.6.1"
 
 val Scala213 = "2.13.5"
-val Scala30 = "3.0.0-M3"
+val Scala30 = "3.0.0-RC1"
 
 ThisBuild / crossScalaVersions := Seq(Scala213, Scala30)
 ThisBuild / scalaVersion := Scala30

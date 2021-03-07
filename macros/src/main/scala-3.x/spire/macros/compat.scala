@@ -1,7 +1,7 @@
 package spire
 package macros
 
-object compat {
+object compat3 {
 
   type Context = Unit
   //scala.reflect.macros.whitebox.Context
