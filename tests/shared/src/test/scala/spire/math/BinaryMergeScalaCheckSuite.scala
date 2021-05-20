@@ -9,7 +9,7 @@ import spire.implicits._
 
 class BinaryMergeScalaCheckSuite extends munit.ScalaCheckSuite {
 
-  implicit val arbitraryArray = implicitly[Arbitrary[Array[Int]]]
+  implicit val arbitraryArray: Arbitrary[Array[Int]] = implicitly[Arbitrary[Array[Int]]]
 
   property("merge") {
     forAll { (a: Array[Int], b: Array[Int]) =>

@@ -859,9 +859,10 @@ object Rational extends RationalInstances {
 }
 
 trait RationalInstances {
-  implicit final val RationalAlgebra = new RationalAlgebra
+  implicit final val RationalAlgebra: Field.WithDefaultGCD[Rational] with NRoot[Rational] with IsRational[Rational] =
+    new RationalAlgebra
   import NumberTag._
-  implicit final val RationalTag = new LargeTag[Rational](Exact, Rational.zero)
+  implicit final val RationalTag: NumberTag[Rational] = new LargeTag[Rational](Exact, Rational.zero)
 
 }
 

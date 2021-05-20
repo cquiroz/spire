@@ -139,10 +139,12 @@ trait FloatIsReal extends IsRational[Float] with FloatTruncatedDivision {
 class FloatAlgebra extends FloatIsField with FloatIsNRoot with FloatIsTrig with FloatIsReal with Serializable
 
 trait FloatInstances {
-  implicit final val FloatAlgebra = new FloatAlgebra
+  implicit final val FloatAlgebra
+    : Field.WithDefaultGCD[Float] with NRoot[Float] with Trig[Float] with IsRational[Float] = new FloatAlgebra
   import Float._
+  import spire.math.NumberTag
   import spire.math.NumberTag._
-  implicit final val FloatTag = new BuiltinFloatTag(0f, MinValue, MaxValue, NaN, PositiveInfinity, NegativeInfinity) {
+  implicit final val FloatTag: NumberTag[Float] = new BuiltinFloatTag(0f, MinValue, MaxValue, NaN, PositiveInfinity, NegativeInfinity) {
     def isInfinite(a: Float): Boolean = java.lang.Float.isInfinite(a)
     def isNaN(a: Float): Boolean = java.lang.Float.isNaN(a)
   }
