@@ -35,7 +35,7 @@ trait Dist[@sp A] extends Any { self =>
       }
     }
 
-  final def given(pred: A => Boolean): Dist[A] =
+  final def given_(pred: A => Boolean): Dist[A] =
     filter(pred)
 
   def until(pred: A => Boolean): Dist[Seq[A]] = {
