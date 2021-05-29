@@ -10,14 +10,16 @@ lazy val munit = "0.7.26"
 lazy val munitDiscipline = "1.0.9"
 
 lazy val shapelessVersion = "2.3.7"
-lazy val algebraVersion = "2.2.2"
+lazy val algebraVersion = "2.2.3"
 
 lazy val apfloatVersion = "1.10.0"
 lazy val jscienceVersion = "4.3.1"
 lazy val apacheCommonsMath3Version = "3.6.1"
 
 val Scala213 = "2.13.5"
-val Scala30 = "3.0.0-RC1"
+val Scala30 = "3.0.0"
+
+Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / crossScalaVersions := Seq(Scala213, Scala30)
 ThisBuild / scalaVersion := Scala30
@@ -425,7 +427,7 @@ lazy val crossVersionSharedSources: Seq[Setting[_]] =
   Seq(Compile, Test).map { sc =>
     (sc / unmanagedSourceDirectories) ++= {
       (sc / unmanagedSourceDirectories).value.map { dir: File =>
-        CrossVersion.partialVersion(scalaBinaryVersion.value) match {
+        CrossVersion.partialVersion(scalaVersion.value) match {
           case Some((major, minor)) =>
             new File(s"${dir.getPath}_$major.$minor")
           case None =>
@@ -439,7 +441,7 @@ lazy val crossVersionSharedSources: Seq[Setting[_]] =
   )
 
 lazy val scalaMacroDependencies: Seq[Setting[_]] = Seq(
-  libraryDependencies ++= {if (isDotty.value) Seq.empty else Seq(scalaOrganization.value % "scala-reflect" % scalaVersion.value % "provided")}
+  libraryDependencies ++= {if (scalaVersion.value.startsWith("3.0")) Seq.empty else Seq(scalaOrganization.value % "scala-reflect" % scalaVersion.value % "provided")}
 )
 
 lazy val commonScalacOptions = Def.setting(

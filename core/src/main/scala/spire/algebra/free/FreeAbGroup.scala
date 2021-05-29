@@ -6,8 +6,9 @@ import spire.std.option._
 import spire.std.map._
 import spire.std.int._
 import spire.syntax.rng._
+import spire.algebra.free.FreeAbGroup
 
-final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal { lhs =>
+final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal { lhs: FreeAbGroup[A] =>
 
   /**
    * Maps the terms using `f` to type `B` and sums their results using the
