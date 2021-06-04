@@ -9,6 +9,7 @@ import spire.math._
 import spire.macros.Syntax
 import spire.syntax.std._
 import scala.annotation.nowarn
+import scala.annotation.targetName
 
 trait EqSyntax {
   implicit def eqOps[A: Eq](a: A): EqOps[A] = new EqOps(a)
@@ -71,7 +72,14 @@ trait GroupSyntax extends MonoidSyntax {
 }
 
 trait AdditiveSemigroupSyntax {
-  implicit def additiveSemigroupOps[A: AdditiveSemigroup](a: A): AdditiveSemigroupOps[A] = new AdditiveSemigroupOps(a)
+  extension [A](lhs: A)(using as: AdditiveSemigroup[A])
+    infix def +(rhs: A): A = as.plus(lhs, rhs)
+    @targetName("plus")
+    infix def ^+(rhs: A): A = as.plus(lhs, rhs)
+    // def +(rhs: Int)(implicit ev1: Ring[A]): A = macro Ops.binopWithLift[Int, Ring[A], A]
+    // def +(rhs: Double)(implicit ev1: Field[A]): A = macro Ops.binopWithLift[Double, Field[A], A]
+    def +(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) + rhs
+
   implicit def literalIntAdditiveSemigroupOps(lhs: Int): LiteralIntAdditiveSemigroupOps =
     new LiteralIntAdditiveSemigroupOps(lhs)
   implicit def literalLongAdditiveSemigroupOps(lhs: Long): LiteralLongAdditiveSemigroupOps =

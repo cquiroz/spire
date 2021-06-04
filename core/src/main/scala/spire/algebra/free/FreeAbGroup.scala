@@ -6,9 +6,24 @@ import spire.std.option._
 import spire.std.map._
 import spire.std.int._
 import spire.syntax.rng._
-import spire.algebra.free.FreeAbGroup
+// import spire.syntax.AdditiveSemigroupOps
+
+final class AdditiveSemigroupOps[A](lhs: A)(implicit as: AdditiveSemigroup[A]) {
+  def +(rhs: A): A = as.plus(rhs, lhs)
+}
+
+trait AdditiveSemigroupSyntax {
+  implicit def additiveSemigroupOps[A: AdditiveSemigroup](
+      a: A
+  ): AdditiveSemigroupOps[A] = new AdditiveSemigroupOps(a)
+}
+
+object syntax {
+  object additiveSemigroup extends AdditiveSemigroupSyntax
+}
 
 final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal { lhs: FreeAbGroup[A] =>
+  import syntax.additiveSemigroup._
 
   /**
    * Maps the terms using `f` to type `B` and sums their results using the
@@ -88,8 +103,17 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal { lhs
   def splitSemigroup[B](f: A => B)(implicit B: CSemigroup[B]): (Option[B], Option[B]) =
     split[Option[B]] { a => Some(f(a)) }
 
-  def |+|(rhs: FreeAbGroup[A]): FreeAbGroup[A] =
-    new FreeAbGroup(lhs.terms + rhs.terms)
+  def |+|(rhs: FreeAbGroup[A]): FreeAbGroup[A] = {
+    implicitly[_root_.algebra.ring.CommutativeRing[Int]]
+    implicitly[AdditiveSemigroup[Map[A, Int]]]
+    // new spire.syntax.AdditiveSemigroupOps(lhs.terms) + rhs.terms
+    // new spire.syntax.AdditiveSemigroupOps(lhs.terms).+(rhs.terms)
+    // new spire.syntax.AdditiveSemigroupOps(rhs.terms).+(lhs.terms)
+    // new FreeAbGroup(lhs.terms.sumy(rhs.terms))
+    // new FreeAbGroup(lhs.terms ^ rhs.terms)
+    new FreeAbGroup(lhs.terms ^+ rhs.terms)
+    // new FreeAbGroup(lhs.terms.+(rhs.terms))
+  }
 
   def |-|(rhs: FreeAbGroup[A]): FreeAbGroup[A] =
     new FreeAbGroup(lhs.terms - rhs.terms)
