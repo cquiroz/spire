@@ -78,7 +78,7 @@ trait AdditiveSemigroupSyntax {
     infix def ^+(rhs: A): A = as.plus(lhs, rhs)
     // def +(rhs: Int)(implicit ev1: Ring[A]): A = macro Ops.binopWithLift[Int, Ring[A], A]
     // def +(rhs: Double)(implicit ev1: Field[A]): A = macro Ops.binopWithLift[Double, Field[A], A]
-    def +(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) + rhs
+    def +(rhs: Number)(using c: ConvertableFrom[A]): Number = c.toNumber(lhs) + rhs
 
   implicit def literalIntAdditiveSemigroupOps(lhs: Int): LiteralIntAdditiveSemigroupOps =
     new LiteralIntAdditiveSemigroupOps(lhs)
@@ -95,7 +95,13 @@ trait AdditiveMonoidSyntax extends AdditiveSemigroupSyntax {
 }
 
 trait AdditiveGroupSyntax extends AdditiveMonoidSyntax {
-  implicit def additiveGroupOps[A: AdditiveGroup](a: A): AdditiveGroupOps[A] = new AdditiveGroupOps(a)
+  extension [A](lhs: A)(using ag: AdditiveGroup[A])
+    def unary_- : A = ag.negate(lhs)
+    def -(rhs: A): A = ag.minus(lhs, rhs)
+    // def -(rhs: Int)(implicit ev1: Ring[A]): A = macro Ops.binopWithLift[Int, Ring[A], A]
+    // def -(rhs: Double)(implicit ev1: Field[A]): A = macro Ops.binopWithLift[Double, Field[A], A]
+    def -(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) - rhs
+
   implicit def literalIntAdditiveGroupOps(lhs: Int): LiteralIntAdditiveGroupOps = new LiteralIntAdditiveGroupOps(lhs)
   implicit def literalLongAdditiveGroupOps(lhs: Long): LiteralLongAdditiveGroupOps = new LiteralLongAdditiveGroupOps(
     lhs

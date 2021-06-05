@@ -103,17 +103,8 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal { lhs
   def splitSemigroup[B](f: A => B)(implicit B: CSemigroup[B]): (Option[B], Option[B]) =
     split[Option[B]] { a => Some(f(a)) }
 
-  def |+|(rhs: FreeAbGroup[A]): FreeAbGroup[A] = {
-    implicitly[_root_.algebra.ring.CommutativeRing[Int]]
-    implicitly[AdditiveSemigroup[Map[A, Int]]]
-    // new spire.syntax.AdditiveSemigroupOps(lhs.terms) + rhs.terms
-    // new spire.syntax.AdditiveSemigroupOps(lhs.terms).+(rhs.terms)
-    // new spire.syntax.AdditiveSemigroupOps(rhs.terms).+(lhs.terms)
-    // new FreeAbGroup(lhs.terms.sumy(rhs.terms))
-    // new FreeAbGroup(lhs.terms ^ rhs.terms)
+  def |+|(rhs: FreeAbGroup[A]): FreeAbGroup[A] =
     new FreeAbGroup(lhs.terms ^+ rhs.terms)
-    // new FreeAbGroup(lhs.terms.+(rhs.terms))
-  }
 
   def |-|(rhs: FreeAbGroup[A]): FreeAbGroup[A] =
     new FreeAbGroup(lhs.terms - rhs.terms)

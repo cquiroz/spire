@@ -199,14 +199,6 @@ final class AdditiveMonoidOps[A: AdditiveMonoid](lhs: A) {
   // def isZero(implicit ev1: Eq[A]): Boolean = macro Ops.unopWithEv2[Eq[A], Boolean]
 }
 
-final class AdditiveGroupOps[A: AdditiveGroup](lhs: A) {
-  // def unary_- : A = macro Ops.unop0[A]
-  def -(rhs: A): A = ???// macro Ops.binop[A, A]
-  // def -(rhs: Int)(implicit ev1: Ring[A]): A = macro Ops.binopWithLift[Int, Ring[A], A]
-  // def -(rhs: Double)(implicit ev1: Field[A]): A = macro Ops.binopWithLift[Double, Field[A], A]
-  def -(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) - rhs
-}
-
 final class LiteralIntAdditiveGroupOps(val lhs: Int) extends AnyVal {
   def -[A](rhs: A)(implicit ev: Ring[A]): A = ev.minus(ev.fromInt(lhs), rhs)
 }
