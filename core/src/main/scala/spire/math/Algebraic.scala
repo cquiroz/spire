@@ -9,7 +9,7 @@ import scala.math.{ScalaNumber, ScalaNumericConversions}
 
 import spire.Platform
 import spire.algebra.{Eq, Field, IsAlgebraic, NRoot, Sign, TruncatedDivisionCRing}
-import spire.macros.Checked.checked
+// import spire.macros.Checked.checked
 import spire.math.poly.{BigDecimalRootRefinement, RootFinder, Roots, Term}
 import spire.std.bigInt._
 import spire.std.bigDecimal._

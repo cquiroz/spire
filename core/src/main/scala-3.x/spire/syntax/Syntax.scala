@@ -111,8 +111,13 @@ trait AdditiveGroupSyntax extends AdditiveMonoidSyntax {
 }
 
 trait MultiplicativeSemigroupSyntax {
-  implicit def multiplicativeSemigroupOps[A: MultiplicativeSemigroup](a: A): MultiplicativeSemigroupOps[A] =
-    new MultiplicativeSemigroupOps(a)
+  extension [A](lhs: A)(using ms: MultiplicativeSemigroup[A])
+    @targetName("times")
+    infix def *(rhs: A): A = ms.times(lhs, rhs)
+    // def *(rhs: Int)(implicit ev1: Ring[A]): A = macro Ops.binopWithLift[Int, Ring[A], A]
+    // def *(rhs: Double)(implicit ev1: Field[A]): A = macro Ops.binopWithLift[Double, Field[A], A]
+    def *(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) * rhs
+
   implicit def literalIntMultiplicativeSemigroupOps(lhs: Int): LiteralIntMultiplicativeSemigroupOps =
     new LiteralIntMultiplicativeSemigroupOps(lhs)
   implicit def literalLongMultiplicativeSemigroupOps(lhs: Long): LiteralLongMultiplicativeSemigroupOps =
@@ -127,8 +132,13 @@ trait MultiplicativeMonoidSyntax extends MultiplicativeSemigroupSyntax {
 }
 
 trait MultiplicativeGroupSyntax extends MultiplicativeMonoidSyntax {
-  implicit def multiplicativeGroupOps[A: MultiplicativeGroup](a: A): MultiplicativeGroupOps[A] =
-    new MultiplicativeGroupOps(a)
+  extension [A](lhs: A)(using mg: MultiplicativeGroup[A])
+    // def reciprocal(): A = macro Ops.unop[A]
+    def /(rhs: A): A = mg.div(lhs, rhs)
+    // def /(rhs: Int)(implicit ev1: Ring[A]): A = macro Ops.binopWithLift[Int, Ring[A], A]
+    // def /(rhs: Double)(implicit ev1: Field[A]): A = macro Ops.binopWithLift[Double, Field[A], A]
+    def /(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) / rhs
+
   implicit def literalIntMultiplicativeGroupOps(lhs: Int): LiteralIntMultiplicativeGroupOps =
     new LiteralIntMultiplicativeGroupOps(lhs)
   implicit def literalLongMultiplicativeGroupOps(lhs: Long): LiteralLongMultiplicativeGroupOps =
@@ -164,7 +174,17 @@ trait EuclideanRingSyntax extends GCDRingSyntax {
 trait FieldSyntax extends EuclideanRingSyntax with MultiplicativeGroupSyntax
 
 trait NRootSyntax {
-  implicit def nrootOps[A: NRoot](a: A): NRootOps[A] = new NRootOps(a)
+  extension [A](lhs: A)(using ev: NRoot[A])
+    def nroot(rhs: Int): A = ev.nroot(lhs, rhs)
+    // def sqrt(): A = macro Ops.unop[A]
+    // def fpow(rhs: A): A = macro Ops.binop[A, A]
+
+    // TODO: should be macros
+    def pow(rhs: Double)(using c: Field[A]): A = ev.fpow(lhs, c.fromDouble(rhs))
+    def **(rhs: Double)(using c: Field[A]): A = ev.fpow(lhs, c.fromDouble(rhs))
+
+    def pow(rhs: Number)(using c: ConvertableFrom[A]): Number = c.toNumber(lhs).pow(rhs)
+    def **(rhs: Number)(using c: ConvertableFrom[A]): Number = c.toNumber(lhs) ** rhs
 }
 
 trait LeftModuleSyntax extends RingSyntax {

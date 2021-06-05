@@ -211,13 +211,6 @@ final class LiteralDoubleAdditiveGroupOps(val lhs: Double) extends AnyVal {
   def -[A](rhs: A)(implicit ev: Field[A]): A = ev.minus(ev.fromDouble(lhs), rhs)
 }
 
-final class MultiplicativeSemigroupOps[A: MultiplicativeSemigroup](lhs: A) {
-  // def *(rhs: A): A = macro Ops.binop[A, A]
-  // def *(rhs: Int)(implicit ev1: Ring[A]): A = macro Ops.binopWithLift[Int, Ring[A], A]
-  // def *(rhs: Double)(implicit ev1: Field[A]): A = macro Ops.binopWithLift[Double, Field[A], A]
-  def *(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) * rhs
-}
-
 final class LiteralIntMultiplicativeSemigroupOps(val lhs: Int) extends AnyVal {
   def *[A](rhs: A)(implicit ev: Ring[A]): A = ev.times(ev.fromInt(lhs), rhs)
 }
@@ -232,14 +225,6 @@ final class LiteralDoubleMultiplicativeSemigroupOps(val lhs: Double) extends Any
 
 final class MultiplicativeMonoidOps[A: MultiplicativeMonoid](lhs: A) {
   // def isOne(implicit ev1: Eq[A]): Boolean = macro Ops.unopWithEv2[Eq[A], Boolean]
-}
-
-final class MultiplicativeGroupOps[A: MultiplicativeGroup](lhs: A) {
-  // def reciprocal(): A = macro Ops.unop[A]
-  // def /(rhs: A): A = macro Ops.binop[A, A]
-  // def /(rhs: Int)(implicit ev1: Ring[A]): A = macro Ops.binopWithLift[Int, Ring[A], A]
-  // def /(rhs: Double)(implicit ev1: Field[A]): A = macro Ops.binopWithLift[Double, Field[A], A]
-  def /(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) / rhs
 }
 
 final class LiteralIntMultiplicativeGroupOps(val lhs: Int) extends AnyVal {
@@ -311,19 +296,6 @@ final class IsRealOps[A: IsReal](lhs: A) {
   // def floor(): A = macro Ops.unop[A]
   // def round(): A = macro Ops.unop[A]
   // //def toDouble(): Double = macro Ops.unop[Double]
-}
-
-final class NRootOps[A](lhs: A)(implicit ev: NRoot[A]) {
-  // def nroot(rhs: Int): A = macro Ops.binop[Int, A]
-  // def sqrt(): A = macro Ops.unop[A]
-  // def fpow(rhs: A): A = macro Ops.binop[A, A]
-
-  // TODO: should be macros
-  def pow(rhs: Double)(implicit c: Field[A]): A = ev.fpow(lhs, c.fromDouble(rhs))
-  def **(rhs: Double)(implicit c: Field[A]): A = ev.fpow(lhs, c.fromDouble(rhs))
-
-  def pow(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs).pow(rhs)
-  def **(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) ** rhs
 }
 
 final class LiteralIntNRootOps(val lhs: Int) extends AnyVal {
