@@ -4,41 +4,42 @@ package macros
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop._
 
-// class CheckedScalaCheckSuite extends munit.ScalaCheckSuite {
-//   import Checked.checked
-//   import Arbitrary.arbitrary
-//
-//   case class NotZero[A](value: A)
-//   implicit def arbNotZeroLong = Arbitrary(arbitrary[Long].filter(_ != 0L).map(NotZero(_)))
-//   implicit def arbNotZeroInt = Arbitrary(arbitrary[Int].filter(_ != 0L).map(NotZero(_)))
-//
-//   def checkForLongOverflow(value: BigInt, check: => Long): Unit = {
-//     if (value.isValidLong) {
-//       assertEquals(check, value.toLong)
-//     } else {
-//       intercept[ArithmeticException] { check }
-//     }
-//   }
-//
-//   def checkForIntOverflow(value: BigInt, check: => Int): Unit = {
-//     if (value.isValidInt) {
-//       assertEquals(check, value.toInt)
-//     } else {
-//       intercept[ArithmeticException] { check }
-//     }
-//   }
-//
-//   test("Negate of Int.MinValue overflows") {
-//     val x = Int.MinValue
-//     intercept[ArithmeticException] { checked(-x) }
-//   }
-//
-//   property("Int negate overflow throws arithmetic exception") {
-//     forAll { (x: Int) =>
-//       checkForIntOverflow(-BigInt(x), checked(-x))
-//     }
-//   }
-//
+class CheckedScalaCheckSuite extends munit.ScalaCheckSuite {
+  import Checked.checked
+  import Arbitrary.arbitrary
+
+  case class NotZero[A](value: A)
+  implicit def arbNotZeroLong: Arbitrary[NotZero[Long]] = Arbitrary(arbitrary[Long].filter(_ != 0L).map(NotZero(_)))
+  implicit def arbNotZeroInt: Arbitrary[NotZero[Int]] = Arbitrary(arbitrary[Int].filter(_ != 0L).map(NotZero(_)))
+
+  def checkForLongOverflow(value: BigInt, check: => Long): Unit = {
+    if (value.isValidLong) {
+      assertEquals(check, value.toLong)
+    } else {
+      intercept[ArithmeticException] { check }
+    }
+  }
+
+  def checkForIntOverflow(value: BigInt, check: => Int): Unit = {
+    if (value.isValidInt) {
+      assertEquals(check, value.toInt)
+    } else {
+      intercept[ArithmeticException] { check }
+    }
+  }
+
+  test("Negate of Int.MinValue overflows") {
+    val x = Int.MinValue
+    intercept[ArithmeticException] { checked(-x) }
+    // checkForIntOverflow(-BigInt(-1), checked(-1))
+  }
+
+  property("Int negate overflow throws arithmetic exception") {
+    forAll { (x: Int) =>
+      checkForIntOverflow(-BigInt(x), checked(-x))
+    }
+  }
+
 //   property("Int addition overflow throws arithmetic exception") {
 //     forAll { (x: Int, y: Int) =>
 //       checkForIntOverflow(BigInt(x) + BigInt(y), checked(x + y))
@@ -71,17 +72,17 @@ import org.scalacheck.Prop._
 //     }
 //   }
 //
-//   test("Negate of Long.MinValue overflows") {
-//     val x = Long.MinValue
-//     intercept[ArithmeticException] { checked(-x) }
-//   }
-//
-//   property("Long negate overflow throws arithmetic exception") {
-//     forAll { (x: Long) =>
-//       checkForLongOverflow(-BigInt(x), checked(-x))
-//     }
-//   }
-//
+  test("Negate of Long.MinValue overflows") {
+    val x = Long.MinValue
+    intercept[ArithmeticException] { checked(-x) }
+  }
+
+  property("Long negate overflow throws arithmetic exception") {
+    forAll { (x: Long) =>
+      checkForLongOverflow(-BigInt(x), checked(-x))
+    }
+  }
+
 //   property("Long addition overflow throws arithmetic exception") {
 //     forAll { (x: Long, y: Long) =>
 //       checkForLongOverflow(BigInt(x) + BigInt(y), checked(x + y))
@@ -167,4 +168,4 @@ import org.scalacheck.Prop._
 //       y * x
 //     })
 //   }
-// }
+}
