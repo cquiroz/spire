@@ -31,13 +31,9 @@ object Checked {
   private def checkedImpl[A](n: Expr[A])(using Quotes, Type[A]): Expr[A] =
     import quotes.reflect.*
     val tree: Term = n.asTerm
-    tree.show(using Printer.TreeStructure)
     tree match
-      // case Term.ApplyUnary(_) =>
       case Inlined(_, _, a: Literal) =>
         a.asExprOf[A]
-        // a.asExprOf[A]
-        // '{${x: A}}
       case r @ Inlined(_, _, Select(x, "unary_-")) =>
         x.asExprOf[A] match
           case '{ $a: Int } =>
@@ -45,12 +41,22 @@ object Checked {
           case '{ $a: Long } =>
             '{ if ($a == Long.MinValue) throw new spire.macros.ArithmeticOverflowException() else ${r.asExprOf[A]} }
           case _ => r.asExprOf[A]
+      case r @ Inlined(_, _, Apply(Select(x, "+"), List(y))) =>
+        val IC =  defn.IntClass
+        val LC = defn.LongClass
+        (x.tpe.widen.typeSymbol, y.tpe.widen.typeSymbol) match {
+          case (IC, IC) =>  '{
+            val xt = ${x.asExprOf[Int]}
+            val yt = ${y.asExprOf[Int]}
+            val z = xt + yt
+            if ((~(xt ^ yt) & (xt ^ z)) < 0) throw new spire.macros.ArithmeticOverflowException() else z.asInstanceOf[A]
+          }
+          case _ =>
+            ???
+        }
       case a =>
         report.error(Printer.TreeStructure.show(tree))
-        a.asExprOf[A]
-        // report.error("???")
-      // case '{ -(${x}: Int) } => '{ if (x == Int.MinValue) throw new ArithmeticException() else $n }
-      // case _ => '{ $n }
+        ???
 
   /**
    * Performs overflow checking for Int/Long operations.
