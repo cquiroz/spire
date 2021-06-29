@@ -13,7 +13,7 @@ final class EqOps[A](lhs: A)(implicit eq: Eq[A]) {
   def =!=[B](rhs: B)(implicit ev: B =:= A): Boolean = eq.neqv(lhs, rhs)
 }
 
-final class PartialOrderOps[A: PartialOrder](lhs: A) {
+// final class PartialOrderOps[A: PartialOrder](lhs: A) {
   // def >(rhs: A): Boolean = macro Ops.binop[A, Boolean]
   // def >=(rhs: A): Boolean = macro Ops.binop[A, Boolean]
   // def <(rhs: A): Boolean = macro Ops.binop[A, Boolean]
@@ -34,11 +34,11 @@ final class PartialOrderOps[A: PartialOrder](lhs: A) {
   // def <(rhs: Double)(implicit ev1: Field[A]): Boolean = macro Ops.binopWithLift[Int, Field[A], A]
   // def <=(rhs: Double)(implicit ev1: Field[A]): Boolean = macro Ops.binopWithLift[Int, Field[A], A]
 
-  def >(rhs: Number)(implicit c: ConvertableFrom[A]): Boolean = c.toNumber(lhs) > rhs
-  def >=(rhs: Number)(implicit c: ConvertableFrom[A]): Boolean = c.toNumber(lhs) >= rhs
-  def <(rhs: Number)(implicit c: ConvertableFrom[A]): Boolean = c.toNumber(lhs) < rhs
-  def <=(rhs: Number)(implicit c: ConvertableFrom[A]): Boolean = c.toNumber(lhs) <= rhs
-}
+//   def >(rhs: Number)(implicit c: ConvertableFrom[A]): Boolean = c.toNumber(lhs) > rhs
+//   def >=(rhs: Number)(implicit c: ConvertableFrom[A]): Boolean = c.toNumber(lhs) >= rhs
+//   def <(rhs: Number)(implicit c: ConvertableFrom[A]): Boolean = c.toNumber(lhs) < rhs
+//   def <=(rhs: Number)(implicit c: ConvertableFrom[A]): Boolean = c.toNumber(lhs) <= rhs
+// }
 
 final class OrderOps[A: Order](lhs: A) {
   // def compare(rhs: A): Int = macro Ops.binop[A, Int]
@@ -91,7 +91,7 @@ final class LiteralDoubleOrderOps(val lhs: Double) extends AnyVal {
   def max[A](rhs: A)(implicit ev: Order[A], c: ConvertableTo[A]): A = ev.max(c.fromDouble(lhs), rhs)
 }
 
-final class SignedOps[A: Signed](lhs: A) {
+// final class SignedOps[A: Signed](lhs: A) {
   // def abs(): A = macro Ops.unop[A]
   // def sign(): Sign = macro Ops.unop[Sign]
   // def signum(): Int = macro Ops.unop[Int]
@@ -103,7 +103,7 @@ final class SignedOps[A: Signed](lhs: A) {
   // def isSignNonZero(): Boolean = macro Ops.unop[Boolean]
   // def isSignNonPositive(): Boolean = macro Ops.unop[Boolean]
   // def isSignNonNegative(): Boolean = macro Ops.unop[Boolean]
-}
+// }
 
 final class TruncatedDivisionOps[A: TruncatedDivision](lhs: A) {
   // def toBigIntOpt(): Opt[BigInt] = macro Ops.unop[Opt[BigInt]]

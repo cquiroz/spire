@@ -51,6 +51,12 @@ object Checked {
             val z = xt + yt
             if ((~(xt ^ yt) & (xt ^ z)) < 0) throw new spire.macros.ArithmeticOverflowException() else z.asInstanceOf[A]
           }
+          case (LC, LC) =>  '{
+            val xt = ${x.asExprOf[Long]}
+            val yt = ${y.asExprOf[Long]}
+            val z = xt + yt
+            if ((~(xt ^ yt) & (xt ^ z)) < 0) throw new spire.macros.ArithmeticOverflowException() else z.asInstanceOf[A]
+          }
           case _ =>
             ???
         }
