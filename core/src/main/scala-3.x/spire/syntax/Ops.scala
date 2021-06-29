@@ -240,7 +240,7 @@ final class LiteralDoubleMultiplicativeGroupOps(val lhs: Double) extends AnyVal 
 }
 
 final class SemiringOps[A: Semiring](lhs: A) {
-  // def pow(rhs: Int): A = macro Ops.binop[Int, A]
+  def pow(rhs: Int): A = ??? //macro Ops.binop[Int, A]
   // def **(rhs: Int): A = macro Ops.binop[Int, A]
 }
 

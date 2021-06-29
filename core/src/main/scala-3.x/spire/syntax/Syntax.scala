@@ -57,7 +57,7 @@ trait SignedSyntax extends OrderSyntax {
 // final class SignedOps[A: Signed](lhs: A) {
     def abs(): A = s.abs(a)
   // def sign(): Sign = macro Ops.unop[Sign]
-  // def signum(): Int = macro Ops.unop[Int]
+    def signum(): Int = s.signum(a)
   //
   // def isSignZero(): Boolean = macro Ops.unop[Boolean]
   // def isSignPositive(): Boolean = macro Ops.unop[Boolean]
@@ -196,6 +196,9 @@ trait MultiplicativeGroupSyntax extends MultiplicativeMonoidSyntax {
 
 trait SemiringSyntax extends AdditiveSemigroupSyntax with MultiplicativeSemigroupSyntax {
   implicit def semiringOps[A: Semiring](a: A): SemiringOps[A] = new SemiringOps(a)
+  // extension [A](lhs: A)(using sg: Semiring[A])
+  //   def pow(rhs: Int): A = ??? //macro Ops.binop[Int, A]
+  // def **(rhs: Int): A = macro Ops.binop[Int, A]
 }
 
 trait RigSyntax extends SemiringSyntax
