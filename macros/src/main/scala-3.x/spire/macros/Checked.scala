@@ -16,7 +16,7 @@ object Checked {
    * returned. If there are errors, the 'orElse' block will be
    * evaluated and returned.
    */
-  // def tryOrElse[A](n: A)(orElse: A): A = macro tryOrElseImpl[A]
+  def tryOrElse[A](n: A)(orElse: A): A = ??? //macro tryOrElseImpl[A]
 
   /**
    * Performs overflow checking for Int/Long operations.
@@ -85,7 +85,7 @@ object Checked {
    * called from within a method that you would like to "return out
    * of" in the case of an overflow.
    */
-  // def tryOrReturn[A](n: A)(orElse: A): A = macro tryOrReturnImpl[A]
+  def tryOrReturn[A](n: A)(orElse: A): A = ??? //macro tryOrReturnImpl[A]
 
   // def tryOrElseImpl[A: c.WeakTypeTag](c: Context)(n: c.Expr[A])(orElse: c.Expr[A]): c.Expr[A] = {
   //   val tree = CheckedRewriter[c.type](c).rewriteSafe[A](n.tree, orElse.tree)
@@ -106,7 +106,7 @@ object Checked {
   // def tryOrReturnImpl[A: c.WeakTypeTag](c: Context)(n: c.Expr[A])(orElse: c.Expr[A]): c.Expr[A] = {
   //   val tree = CheckedRewriter[c.type](c).rewriteFast[A](n.tree, orElse.tree)
   //   val resetTree = resetLocalAttrs(c)(tree) // See SI-6711
-  //   c.Expr[A](resetTree)
+  //   c.Expr[A](resetTrente)
   // }
 }
 

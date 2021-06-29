@@ -83,12 +83,12 @@ class CheckedScalaCheckSuite extends munit.ScalaCheckSuite {
     }
   }
 
-//   property("Long addition overflow throws arithmetic exception") {
-//     forAll { (x: Long, y: Long) =>
-//       checkForLongOverflow(BigInt(x) + BigInt(y), checked(x + y))
-//     }
-//   }
-//
+  property("Long addition overflow throws arithmetic exception") {
+    forAll { (x: Long, y: Long) =>
+      checkForLongOverflow(BigInt(x) + BigInt(y), checked(x + y))
+    }
+  }
+
 //   property("Long subtraction overflow throws arithmetic exception") {
 //     forAll { (x: Long, y: Long) =>
 //       checkForLongOverflow(BigInt(x) - BigInt(y), checked(x - y))

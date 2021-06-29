@@ -29,7 +29,7 @@ object Qux {
 
   implicit class QuxOps0[A: Qux](x: A) {
     // def negate: A = ??? //macro DefaultOps.unop0[A]
-    def negate: A = DefaultOps.unop0[A]
+    // def negate: A = DefaultOps.unop0[A]
   }
 
   // implicit class QuxOps1[A: Qux](x: A) {
@@ -55,12 +55,12 @@ object Qux {
 
 class MachinistSuite extends munit.FunSuite {
 
-  test("Unary operators") {
-    import Qux.QuxOps0
-
-    def foo[A: Qux](a: A): A = a.negate
-    assert(foo(2) == -2)
-  }
+  // test("Unary operators") {
+  //   import Qux.QuxOps0
+  //
+  //   def foo[A: Qux](a: A): A = a.negate
+  //   assert(foo(2) == -2)
+  // }
 
   // test("Binary operators, typeclass provided by the syntax class") {
   //   import Qux.QuxOps1

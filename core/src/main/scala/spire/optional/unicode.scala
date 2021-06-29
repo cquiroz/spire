@@ -45,8 +45,8 @@ package object unicode {
   }
 
   implicit class EqOps[A](lhs: A)(implicit ev: Eq[A]) {
-    def ≡(rhs: A): Boolean = macro Ops.binop[A, A]
-    def ≠(rhs: A): Boolean = macro Ops.binop[A, A]
+    def ≡(rhs: A): Boolean = ev.eqv(lhs, rhs)
+    def ≠(rhs: A): Boolean = ev.neqv(lhs, rhs)
   }
 
   implicit class PartialOrderOps[A](lhs: A)(implicit ev: PartialOrder[A]) {
@@ -55,11 +55,11 @@ package object unicode {
   }
 
   implicit class MeetSemilatticeOps[A](lhs: A)(implicit ev: MeetSemilattice[A]) {
-    def ∧(rhs: A): A = macro Ops.binop[A, A]
+    def ∧(rhs: A): A = ev.meet(lhs, rhs)
   }
 
   implicit class JoinSemilatticeOps[A](lhs: A)(implicit ev: JoinSemilattice[A]) {
-    def ∨(rhs: A): A = macro Ops.binop[A, A]
+    def ∨(rhs: A): A = ev.join(lhs, rhs) //macro Ops.binop[A, A]
   }
 
   implicit class HeytingOps[A](lhs: A)(implicit ev: Heyting[A]) {

@@ -266,7 +266,7 @@ object PolySparse {
         val e0 = exp(j0)
         val c0 = coeff(j0)
         if (e != e0) {
-          if (!c.isZero) {
+          if (!c.isZero(Eq[C])) {
             expBldr += e
             coeffBldr += c
           }
@@ -278,7 +278,7 @@ object PolySparse {
         j = j0
         i += 1
       }
-      if (!c.isZero) {
+      if (!c.isZero(Eq[C])) {
         expBldr += e
         coeffBldr += c
       }
