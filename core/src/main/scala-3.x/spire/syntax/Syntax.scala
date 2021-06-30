@@ -52,15 +52,15 @@ trait OrderSyntax extends PartialOrderSyntax {
 
     def compare(rhs: Int)(implicit ev1: Ring[A]): Int = compare(ev1.fromInt(rhs))
     def min(rhs: Int)(implicit ev1: Ring[A]): A = min(ev1.fromInt(rhs))
-    def max(rhs: Int)(implicit ev1: Ring[A]): A = max(ev1.fromInt(rhs))
+    // def max(rhs: Int)(implicit ev1: Ring[A]): A = max(ev1.fromInt(rhs))
 
     def compare(rhs: Double)(implicit ev1: Field[A]): Int = compare(ev1.fromDouble(rhs))
     def min(rhs: Double)(implicit ev1: Field[A]): A = min(ev1.fromDouble(rhs))
-    def max(rhs: Double)(implicit ev1: Field[A]): A = max(ev1.fromDouble(rhs))
+    // def max(rhs: Double)(implicit ev1: Field[A]): A = max(ev1.fromDouble(rhs))
 
     def compare(rhs: Number)(implicit c: ConvertableFrom[A]): Int = c.toNumber(lhs).compare(rhs)
     def min(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs).min(rhs)
-    def max(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs).max(rhs)
+    // def max(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs).max(rhs)
 
   // extension (lhs: Int)
   //   def <[A](rhs: A)(implicit ev: Order[A], c: ConvertableTo[A]): Boolean = ev.lt(c.fromInt(lhs), rhs)
@@ -183,15 +183,18 @@ trait MultiplicativeSemigroupSyntax {
   extension [A](lhs: A)(using ms: MultiplicativeSemigroup[A])
     @targetName("times")
     infix def *(rhs: A): A = ms.times(lhs, rhs)
-    @targetName("times")
-    infix def *(rhs: Int)(implicit ev1: Ring[A]): A = ms.times(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
-    @targetName("times")
-    infix def *(rhs: Double)(implicit ev1: Field[A]): A = ms.times(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
-    @targetName("times")
-    infix def *(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) * rhs
+    // @targetName("times")
+    // infix def *(rhs: Int)(using ev1: Ring[A]): A = ms.times(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
+    // @targetName("times")
+    // infix def *(rhs: Double)(using ev1: Field[A]): A = ms.times(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
+    // @targetName("times")
+    // infix def *(rhs: Number)(using c: ConvertableFrom[A]): Number = c.toNumber(lhs) * rhs
 
-  implicit def literalIntMultiplicativeSemigroupOps(lhs: Int): LiteralIntMultiplicativeSemigroupOps =
-    new LiteralIntMultiplicativeSemigroupOps(lhs)
+  extension(lhs: Int)
+    infix def *[A](rhs: A)(implicit ev: Ring[A]): A = ev.times(ev.fromInt(lhs), rhs)
+
+  // implicit def literalIntMultiplicativeSemigroupOps(lhs: Int): LiteralIntMultiplicativeSemigroupOps =
+  //   new LiteralIntMultiplicativeSemigroupOps(lhs)
   implicit def literalLongMultiplicativeSemigroupOps(lhs: Long): LiteralLongMultiplicativeSemigroupOps =
     new LiteralLongMultiplicativeSemigroupOps(lhs)
   implicit def literalDoubleMultiplicativeSemigroupOps(lhs: Double): LiteralDoubleMultiplicativeSemigroupOps =
@@ -206,10 +209,10 @@ trait MultiplicativeMonoidSyntax extends MultiplicativeSemigroupSyntax {
 trait MultiplicativeGroupSyntax extends MultiplicativeMonoidSyntax {
   extension [A](lhs: A)(using mg: MultiplicativeGroup[A])
     def reciprocal(): A = mg.reciprocal(lhs)
-    def /(rhs: A): A = mg.div(lhs, rhs)
-    def /(rhs: Int)(implicit ev1: Ring[A]): A = mg.div(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
-    def /(rhs: Double)(implicit ev1: Field[A]): A = mg.div(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
-    def /(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) / rhs
+    infix def /(rhs: A): A = mg.div(lhs, rhs)
+    infix def /(rhs: Int)(implicit ev1: Ring[A]): A = mg.div(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
+    infix def /(rhs: Double)(implicit ev1: Field[A]): A = mg.div(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
+    infix def /(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) / rhs
 
   implicit def literalIntMultiplicativeGroupOps(lhs: Int): LiteralIntMultiplicativeGroupOps =
     new LiteralIntMultiplicativeGroupOps(lhs)

@@ -211,9 +211,9 @@ final class LiteralDoubleAdditiveGroupOps(val lhs: Double) extends AnyVal {
   def -[A](rhs: A)(implicit ev: Field[A]): A = ev.minus(ev.fromDouble(lhs), rhs)
 }
 
-final class LiteralIntMultiplicativeSemigroupOps(val lhs: Int) extends AnyVal {
-  def *[A](rhs: A)(implicit ev: Ring[A]): A = ev.times(ev.fromInt(lhs), rhs)
-}
+// final class LiteralIntMultiplicativeSemigroupOps(val lhs: Int) extends AnyVal {
+//   def *[A](rhs: A)(implicit ev: Ring[A]): A = ev.times(ev.fromInt(lhs), rhs)
+// }
 
 final class LiteralLongMultiplicativeSemigroupOps(val lhs: Long) extends AnyVal {
   def *[A](rhs: A)(implicit ev: Ring[A], c: ConvertableTo[A]): A = ev.times(c.fromLong(lhs), rhs)
@@ -381,8 +381,8 @@ final class RightModuleOps[V](x: V) {
 final class ModuleUnboundOps[F: ({ type F[A] = CModule[_, A] })#F](lhs: F) {
   // def +(rhs: F): F = macro Ops.binopWithScalar[F, F]
   // def -(rhs: F): F = macro Ops.binopWithScalar[F, F]
-  // def unary_- : F = macro Ops.unopWithScalar0[F]
-  //
+  def unary_- : F = ??? // macro Ops.unopWithScalar0[F]
+  
   def *(rhs: F): F = ??? //macro Ops.binopWithScalar[F, F]
   //
   // def pow(rhs: Int): F = macro Ops.binopWithScalar[Int, F]

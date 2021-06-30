@@ -49,10 +49,10 @@ package object unicode {
     def ≠(rhs: A): Boolean = ev.neqv(lhs, rhs)
   }
 
-  implicit class PartialOrderOps[A](lhs: A)(implicit ev: PartialOrder[A]) {
-    def ≤(rhs: A): Boolean = macro Ops.binop[A, A]
-    def ≥(rhs: A): Boolean = macro Ops.binop[A, A]
-  }
+  // implicit class PartialOrderOps[A](lhs: A)(implicit ev: PartialOrder[A]) {
+  //   def ≤(rhs: A): Boolean = macro Ops.binop[A, A]
+  //   def ≥(rhs: A): Boolean = macro Ops.binop[A, A]
+  // }
 
   implicit class MeetSemilatticeOps[A](lhs: A)(implicit ev: MeetSemilattice[A]) {
     def ∧(rhs: A): A = ev.meet(lhs, rhs)
@@ -62,15 +62,15 @@ package object unicode {
     def ∨(rhs: A): A = ev.join(lhs, rhs) //macro Ops.binop[A, A]
   }
 
-  implicit class HeytingOps[A](lhs: A)(implicit ev: Heyting[A]) {
-    def ⊃(rhs: A): A = macro Ops.binop[A, A]
-  }
-
-  implicit class BoolOps[A](lhs: A)(implicit ev: Bool[A]) {
-    def ⊻(rhs: A): A = macro Ops.binop[A, A]
-    def ⊼(rhs: A): A = macro Ops.binop[A, A]
-    def ⊽(rhs: A): A = macro Ops.binop[A, A]
-  }
+  // implicit class HeytingOps[A](lhs: A)(implicit ev: Heyting[A]) {
+  //   def ⊃(rhs: A): A = macro Ops.binop[A, A]
+  // }
+  //
+  // implicit class BoolOps[A](lhs: A)(implicit ev: Bool[A]) {
+  //   def ⊻(rhs: A): A = macro Ops.binop[A, A]
+  //   def ⊼(rhs: A): A = macro Ops.binop[A, A]
+  //   def ⊽(rhs: A): A = macro Ops.binop[A, A]
+  // }
 
   implicit class SymbolicSetOps[A](val lhs: Set[A]) extends AnyVal {
     def ∋(a: A): Boolean = lhs(a)
