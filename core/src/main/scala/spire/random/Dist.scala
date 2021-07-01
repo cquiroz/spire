@@ -148,9 +148,9 @@ trait Dist[@sp A] extends Any { self =>
     }
 }
 
-final class DistIterator[A](next: Dist[A], gen: Generator) extends Iterator[A] {
+final class DistIterator[A](nextD: Dist[A], gen: Generator) extends Iterator[A] {
   final def hasNext: Boolean = true
-  final def next(): A = next(gen)
+  final def next(): A = nextD(gen)
 }
 
 class DistFromGen[@sp A](f: Generator => A) extends Dist[A] {

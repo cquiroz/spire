@@ -179,27 +179,39 @@ trait AdditiveGroupSyntax extends AdditiveMonoidSyntax {
     new LiteralDoubleAdditiveGroupOps(lhs)
 }
 
+
 trait MultiplicativeSemigroupSyntax {
-  extension [A](lhs: A)(using ms: MultiplicativeSemigroup[A])
-    @targetName("times")
-    infix def *(rhs: A): A = ms.times(lhs, rhs)
-    // @targetName("times")
-    // infix def *(rhs: Int)(using ev1: Ring[A]): A = ms.times(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
-    // @targetName("times")
-    // infix def *(rhs: Double)(using ev1: Field[A]): A = ms.times(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
-    // @targetName("times")
-    // infix def *(rhs: Number)(using c: ConvertableFrom[A]): Number = c.toNumber(lhs) * rhs
-
-  extension(lhs: Int)
-    infix def *[A](rhs: A)(implicit ev: Ring[A]): A = ev.times(ev.fromInt(lhs), rhs)
-
-  // implicit def literalIntMultiplicativeSemigroupOps(lhs: Int): LiteralIntMultiplicativeSemigroupOps =
-  //   new LiteralIntMultiplicativeSemigroupOps(lhs)
+  implicit def multiplicativeSemigroupOps[A: MultiplicativeSemigroup](a: A): MultiplicativeSemigroupOps[A] =
+    new MultiplicativeSemigroupOps(a)
+  implicit def literalIntMultiplicativeSemigroupOps(lhs: Int): LiteralIntMultiplicativeSemigroupOps =
+    new LiteralIntMultiplicativeSemigroupOps(lhs)
   implicit def literalLongMultiplicativeSemigroupOps(lhs: Long): LiteralLongMultiplicativeSemigroupOps =
     new LiteralLongMultiplicativeSemigroupOps(lhs)
   implicit def literalDoubleMultiplicativeSemigroupOps(lhs: Double): LiteralDoubleMultiplicativeSemigroupOps =
     new LiteralDoubleMultiplicativeSemigroupOps(lhs)
 }
+
+// trait MultiplicativeSemigroupSyntax {
+//   extension [A](lhs: A)(using ms: MultiplicativeSemigroup[A])
+//     @targetName("times")
+//     infix def *(rhs: A): A = ms.times(lhs, rhs)
+//     @targetName("times")
+//     infix def *(rhs: Int)(using ev1: Ring[A]): A = ms.times(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
+//     // @targetName("times")
+//     // infix def *(rhs: Double)(using ev1: Field[A]): A = ms.times(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
+//     // @targetName("times")
+//     // infix def *(rhs: Number)(using c: ConvertableFrom[A]): Number = c.toNumber(lhs) * rhs
+//
+//   extension(lhs: Int)
+//     infix def *[A](rhs: A)(implicit ev: Ring[A]): A = ev.times(ev.fromInt(lhs), rhs)
+//
+//   // implicit def literalIntMultiplicativeSemigroupOps(lhs: Int): LiteralIntMultiplicativeSemigroupOps =
+//   //   new LiteralIntMultiplicativeSemigroupOps(lhs)
+//   implicit def literalLongMultiplicativeSemigroupOps(lhs: Long): LiteralLongMultiplicativeSemigroupOps =
+//     new LiteralLongMultiplicativeSemigroupOps(lhs)
+//   implicit def literalDoubleMultiplicativeSemigroupOps(lhs: Double): LiteralDoubleMultiplicativeSemigroupOps =
+//     new LiteralDoubleMultiplicativeSemigroupOps(lhs)
+// }
 
 trait MultiplicativeMonoidSyntax extends MultiplicativeSemigroupSyntax {
   implicit def multiplicativeMonoidOps[A](a: A)(implicit ev: MultiplicativeMonoid[A]): MultiplicativeMonoidOps[A] =
@@ -207,13 +219,8 @@ trait MultiplicativeMonoidSyntax extends MultiplicativeSemigroupSyntax {
 }
 
 trait MultiplicativeGroupSyntax extends MultiplicativeMonoidSyntax {
-  extension [A](lhs: A)(using mg: MultiplicativeGroup[A])
-    def reciprocal(): A = mg.reciprocal(lhs)
-    infix def /(rhs: A): A = mg.div(lhs, rhs)
-    infix def /(rhs: Int)(implicit ev1: Ring[A]): A = mg.div(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
-    infix def /(rhs: Double)(implicit ev1: Field[A]): A = mg.div(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
-    infix def /(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) / rhs
-
+  implicit def multiplicativeGroupOps[A: MultiplicativeGroup](a: A): MultiplicativeGroupOps[A] =
+    new MultiplicativeGroupOps(a)
   implicit def literalIntMultiplicativeGroupOps(lhs: Int): LiteralIntMultiplicativeGroupOps =
     new LiteralIntMultiplicativeGroupOps(lhs)
   implicit def literalLongMultiplicativeGroupOps(lhs: Long): LiteralLongMultiplicativeGroupOps =
@@ -221,6 +228,23 @@ trait MultiplicativeGroupSyntax extends MultiplicativeMonoidSyntax {
   implicit def literalDoubleMultiplicativeGroupOps(lhs: Double): LiteralDoubleMultiplicativeGroupOps =
     new LiteralDoubleMultiplicativeGroupOps(lhs)
 }
+
+// trait MultiplicativeGroupSyntax extends MultiplicativeMonoidSyntax {
+//
+//   extension [A ](lhs: A)(using mg: MultiplicativeGroup[A])
+//     def reciprocal(): A = mg.reciprocal(lhs)
+//     infix def /(rhs: A): A = mg.div(lhs, rhs)
+//     infix def /(rhs: Int)(implicit ev1: Ring[A]): A = mg.div(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
+//     infix def /(rhs: Double)(implicit ev1: Field[A]): A = mg.div(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
+//     infix def /(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) / rhs
+//
+//   implicit def literalIntMultiplicativeGroupOps(lhs: Int): LiteralIntMultiplicativeGroupOps =
+//     new LiteralIntMultiplicativeGroupOps(lhs)
+//   implicit def literalLongMultiplicativeGroupOps(lhs: Long): LiteralLongMultiplicativeGroupOps =
+//     new LiteralLongMultiplicativeGroupOps(lhs)
+//   implicit def literalDoubleMultiplicativeGroupOps(lhs: Double): LiteralDoubleMultiplicativeGroupOps =
+//     new LiteralDoubleMultiplicativeGroupOps(lhs)
+// }
 
 trait SemiringSyntax extends AdditiveSemigroupSyntax with MultiplicativeSemigroupSyntax {
   implicit def semiringOps[A: Semiring](a: A): SemiringOps[A] = new SemiringOps(a)

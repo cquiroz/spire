@@ -211,9 +211,17 @@ final class LiteralDoubleAdditiveGroupOps(val lhs: Double) extends AnyVal {
   def -[A](rhs: A)(implicit ev: Field[A]): A = ev.minus(ev.fromDouble(lhs), rhs)
 }
 
-// final class LiteralIntMultiplicativeSemigroupOps(val lhs: Int) extends AnyVal {
-//   def *[A](rhs: A)(implicit ev: Ring[A]): A = ev.times(ev.fromInt(lhs), rhs)
-// }
+
+final class MultiplicativeSemigroupOps[A](lhs: A)(using ms: MultiplicativeSemigroup[A]) {
+  def *(rhs: A): A = ms.times(lhs, rhs)
+  def *(rhs: Int)(implicit ev1: Ring[A]): A = ms.times(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
+  def *(rhs: Double)(implicit ev1: Field[A]): A = ms.times(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
+  def *(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) * rhs
+}
+
+final class LiteralIntMultiplicativeSemigroupOps(val lhs: Int) extends AnyVal {
+  def *[A](rhs: A)(implicit ev: Ring[A]): A = ev.times(ev.fromInt(lhs), rhs)
+}
 
 final class LiteralLongMultiplicativeSemigroupOps(val lhs: Long) extends AnyVal {
   def *[A](rhs: A)(implicit ev: Ring[A], c: ConvertableTo[A]): A = ev.times(c.fromLong(lhs), rhs)
@@ -225,6 +233,14 @@ final class LiteralDoubleMultiplicativeSemigroupOps(val lhs: Double) extends Any
 
 final class MultiplicativeMonoidOps[A: MultiplicativeMonoid](lhs: A) {
   // def isOne(implicit ev1: Eq[A]): Boolean = macro Ops.unopWithEv2[Eq[A], Boolean]
+}
+
+final class MultiplicativeGroupOps[A](lhs: A)(using mg: MultiplicativeGroup[A]) {
+  def reciprocal(): A = mg.reciprocal(lhs)
+  def /(rhs: A): A = mg.div(lhs, rhs)
+  def /(rhs: Int)(implicit ev1: Ring[A]): A = mg.div(lhs, ev1.fromInt(rhs)) //macro Ops.binopWithLift[Int, Ring[A], A]
+  def /(rhs: Double)(implicit ev1: Field[A]): A = mg.div(lhs, ev1.fromDouble(rhs)) //macro Ops.binopWithLift[Double, Field[A], A]
+  def /(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) / rhs
 }
 
 final class LiteralIntMultiplicativeGroupOps(val lhs: Int) extends AnyVal {
@@ -241,7 +257,7 @@ final class LiteralDoubleMultiplicativeGroupOps(val lhs: Double) extends AnyVal 
 
 final class SemiringOps[A: Semiring](lhs: A) {
   def pow(rhs: Int): A = Semiring[A].pow(lhs, rhs)
-  // def **(rhs: Int): A = macro Ops.binop[Int, A]
+  def **(rhs: Int): A = pow(rhs) //macro Ops.binop[Int, A]
 }
 
 final class GCDRingOps[A: GCDRing](lhs: A) {
@@ -382,11 +398,11 @@ final class ModuleUnboundOps[F: ({ type F[A] = CModule[_, A] })#F](lhs: F) {
   // def +(rhs: F): F = macro Ops.binopWithScalar[F, F]
   // def -(rhs: F): F = macro Ops.binopWithScalar[F, F]
   def unary_- : F = ??? // macro Ops.unopWithScalar0[F]
-  
+
   def *(rhs: F): F = ??? //macro Ops.binopWithScalar[F, F]
   //
   // def pow(rhs: Int): F = macro Ops.binopWithScalar[Int, F]
-  // def **(rhs: Int): F = macro Ops.binopWithScalar[Int, F]
+  def **(rhs: Int): F = ??? //macro Ops.binopWithScalar[Int, F]
 }
 
 final class VectorSpaceOps[V](x: V) {
