@@ -212,7 +212,7 @@ package object prime {
 
   def sieverUpToNth(n: Long): Siever = {
     val upper = n * log(n.toDouble) + n * log(log(n - 0.9385))
-    val cutoff = max(1000L, (sqrt(upper) + 512L).toLong)
+    val cutoff = max(1000L, (spire.math.sqrt(upper) + 512L).toLong)
     prime.Siever(SieveSize, cutoff)
   }
 

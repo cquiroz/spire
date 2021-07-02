@@ -6,7 +6,7 @@ import spire.algebra._
 import spire.algebra.lattice._
 import spire.algebra.partial._
 import spire.math._
-import spire.macros.Syntax
+// import spire.macros.Syntax
 import spire.syntax.std._
 import scala.annotation.nowarn
 import scala.annotation.targetName
@@ -50,15 +50,15 @@ trait OrderSyntax extends PartialOrderSyntax {
     def min(rhs: A): A = o.min(lhs, rhs)
     def max(rhs: A): A = o.max(lhs, rhs)
 
-    def compare(rhs: Int)(implicit ev1: Ring[A]): Int = compare(ev1.fromInt(rhs))
+    // def compare(rhs: Int)(implicit ev1: Ring[A]): Int = compare(ev1.fromInt(rhs))
     def min(rhs: Int)(implicit ev1: Ring[A]): A = min(ev1.fromInt(rhs))
     // def max(rhs: Int)(implicit ev1: Ring[A]): A = max(ev1.fromInt(rhs))
 
-    def compare(rhs: Double)(implicit ev1: Field[A]): Int = compare(ev1.fromDouble(rhs))
+    // def compare(rhs: Double)(implicit ev1: Field[A]): Int = compare(ev1.fromDouble(rhs))
     def min(rhs: Double)(implicit ev1: Field[A]): A = min(ev1.fromDouble(rhs))
     // def max(rhs: Double)(implicit ev1: Field[A]): A = max(ev1.fromDouble(rhs))
 
-    def compare(rhs: Number)(implicit c: ConvertableFrom[A]): Int = c.toNumber(lhs).compare(rhs)
+    // def compare(rhs: Number)(implicit c: ConvertableFrom[A]): Int = c.toNumber(lhs).compare(rhs)
     def min(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs).min(rhs)
     // def max(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs).max(rhs)
 
@@ -140,15 +140,18 @@ trait GroupSyntax extends MonoidSyntax {
 
 trait AdditiveSemigroupSyntax {
   extension [A](lhs: A)(using as: AdditiveSemigroup[A])
-    infix def +(rhs: A): A = as.plus(lhs, rhs)
+    def +(rhs: A): A = as.plus(lhs, rhs)
     @targetName("plus")
-    infix def ^+(rhs: A): A = as.plus(lhs, rhs)
-    // def +(rhs: Int)(implicit ev1: Ring[A]): A = ??? //macro Ops.binopWithLift[Int, Ring[A], A]
-    // def +(rhs: Double)(implicit ev1: Field[A]): A = ??? //macro Ops.binopWithLift[Double, Field[A], A]
+    def ^+(rhs: A): A = as.plus(lhs, rhs)
+    def +(rhs: Int)(implicit ev1: Ring[A]): A = as.plus(lhs, ev1.fromInt(rhs))
+    def +(rhs: Double)(implicit ev1: Field[A]): A = as.plus(lhs, ev1.fromDouble(rhs))
     def +(rhs: Number)(using c: ConvertableFrom[A]): Number = c.toNumber(lhs) + rhs
 
-  implicit def literalIntAdditiveSemigroupOps(lhs: Int): LiteralIntAdditiveSemigroupOps =
-    new LiteralIntAdditiveSemigroupOps(lhs)
+  extension(lhs: Int)
+    def +[A](rhs: A)(using ev: Ring[A]): A = ev.plus(ev.fromInt(lhs), rhs)
+
+  // implicit def literalIntAdditiveSemigroupOps(lhs: Int): LiteralIntAdditiveSemigroupOps =
+  //   new LiteralIntAdditiveSemigroupOps(lhs)
   implicit def literalLongAdditiveSemigroupOps(lhs: Long): LiteralLongAdditiveSemigroupOps =
     new LiteralLongAdditiveSemigroupOps(lhs)
   implicit def literalDoubleAdditiveSemigroupOps(lhs: Double): LiteralDoubleAdditiveSemigroupOps =
@@ -296,6 +299,7 @@ trait EuclideanRingSyntax extends GCDRingSyntax {
 trait FieldSyntax extends EuclideanRingSyntax with MultiplicativeGroupSyntax
 
 trait NRootSyntax {
+  // implicit def nrootOps[A: NRoot](a: A): NRootOps[A] = new NRootOps(a)
   extension [A](lhs: A)(using ev: NRoot[A])
     def nroot(rhs: Int): A = ev.nroot(lhs, rhs)
     def sqrt(): A = ev.sqrt(lhs)

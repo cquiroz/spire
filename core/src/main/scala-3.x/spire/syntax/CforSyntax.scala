@@ -6,7 +6,7 @@ import spire.algebra._
 import spire.algebra.lattice._
 import spire.algebra.partial._
 import spire.math._
-import spire.macros.Syntax
+// import spire.macros.Syntax
 import spire.syntax.std._
 import scala.annotation.nowarn
 
@@ -17,8 +17,9 @@ trait CforSyntax {
       body(index)
       index = next(index)
     }
-  // def cforRange(r: Range)(body: Int => Unit): Unit =
-  //   macro Syntax.cforRangeMacro
+  def cforRange(r: Range)(body: Int => Unit): Unit =
+    ???
+    // macro Syntax.cforRangeMacro
   // def cforRange2(r1: Range, r2: Range)(body: (Int, Int) => Unit): Unit =
   //   macro Syntax.cforRange2Macro
 }

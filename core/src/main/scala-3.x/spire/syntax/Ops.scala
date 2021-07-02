@@ -4,7 +4,7 @@ package syntax
 import spire.algebra._
 import spire.algebra.lattice._
 import spire.algebra.partial._
-import spire.macros.Ops
+// import spire.macros.Ops
 import spire.math.{BitString, ConvertableFrom, ConvertableTo, Interval, Number, Rational}
 import spire.util.Opt
 
@@ -314,6 +314,19 @@ final class LiteralDoubleEuclideanRingOps(val lhs: Double) extends AnyVal {
   // //def toDouble(): Double = macro Ops.unop[Double]
 // }
 
+final class NRootOps[A](lhs: A)(implicit ev: NRoot[A]) {
+  def nroot(rhs: Int): A = ev.nroot(lhs, rhs)
+  def sqrt(): A = ev.sqrt(lhs)
+  def fpow(rhs: A): A = ev.fpow(lhs, rhs)
+
+  // TODO: should be macros
+  def pow(rhs: Double)(implicit c: Field[A]): A = ev.fpow(lhs, c.fromDouble(rhs))
+  def **(rhs: Double)(implicit c: Field[A]): A = ev.fpow(lhs, c.fromDouble(rhs))
+
+  def pow(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs).pow(rhs)
+  def **(rhs: Number)(implicit c: ConvertableFrom[A]): Number = c.toNumber(lhs) ** rhs
+}
+
 final class LiteralIntNRootOps(val lhs: Int) extends AnyVal {
   def **[A](rhs: A)(implicit ev: NRoot[A], c: ConvertableTo[A]): A = ev.fpow(c.fromLong(lhs), rhs)
 }
@@ -328,7 +341,7 @@ final class LiteralDoubleNRootOps(val lhs: Double) extends AnyVal {
 
 final class TrigOps[A](lhs: A)(implicit ev: Trig[A]) {
   // def exp(): A = macro Ops.unop[A]
-  // def log(): A = macro Ops.unop[A]
+  def log(): A = ??? // macro Ops.unop[A]
 
   def log(base: Int)(implicit f: Field[A]): A =
     f.div(ev.log(lhs), ev.log(f.fromInt(base)))
@@ -395,7 +408,7 @@ final class RightModuleOps[V](x: V) {
 }
 
 final class ModuleUnboundOps[F: ({ type F[A] = CModule[_, A] })#F](lhs: F) {
-  // def +(rhs: F): F = macro Ops.binopWithScalar[F, F]
+  def +(rhs: F): F = ??? //macro Ops.binopWithScalar[F, F]
   // def -(rhs: F): F = macro Ops.binopWithScalar[F, F]
   def unary_- : F = ??? // macro Ops.unopWithScalar0[F]
 
@@ -519,7 +532,7 @@ final class ActionUnboundOps[G: ({ type F[A] = Action[_, A] })#F](lhs: G) {
 }
 
 final class AdditiveActionUnboundOps[G: ({ type F[A] = AdditiveAction[_, A] })#F](lhs: G) {
-  // def +(rhs: G): G = macro Ops.binopWithScalar[G, G]
+  def +(rhs: G): G = ??? //macro Ops.binopWithScalar[G, G]
   // def -(rhs: G): G = macro Ops.binopWithScalar[G, G]
   def unary_- : G = ??? //macro Ops.unopWithScalar0[G]
 }
